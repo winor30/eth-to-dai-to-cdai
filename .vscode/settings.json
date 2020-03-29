@@ -1,0 +1,28 @@
+{
+  "git.ignoreLimitWarning": true,
+  "solidity.compileUsingRemoteVersion": "latest",
+  "solidity.packageDefaultDependenciesContractsDirectory": "",
+  "solidity.packageDefaultDependenciesDirectory": "node_modules",
+  "solidity.lintOnSave": true,
+  "solidity.soliumRules": {
+    "extends": "solium:recommended",
+    "plugins": [
+      "security"
+    ],
+    "rules": {
+      "quotes": [
+        "error",
+        "double"
+      ],
+      "indentation": [
+        "error",
+        4
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "no-call-value": "off"
+    }
+  }
+}
