@@ -20,7 +20,7 @@ const main = async function() {
   await showBalances(myWalletAddress);
   console.log();
 
-  // eth
+  // ethToDaiに入れたETH（実際は変換されてcDai）を全て引き出す
   const result = await ethToDai.methods.redeemAll(uniswap.options.address, dai.options.address, cDai.options.address, Math.floor(Date.now() / 1000) + 300).send({
     from: myWalletAddress, // Some Ganache wallet address
     gasLimit: web3.utils.toHex(500000),        // posted at compound.finance/developers#gas-costs

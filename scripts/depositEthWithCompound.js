@@ -19,7 +19,7 @@ const main = async function() {
   await showBalances(myWalletAddress);
   console.log();
 
-  // eth
+  // ethToDaiにETHをデポジットする。デポジットされたETHはcDaiへ変換されて利子を得ることができる
   const result = await ethToDai.methods.swapEtherToTokenToCTokenByUniswap(uniswap.options.address, dai.options.address, cDai.options.address, Math.floor(Date.now() / 1000) + 300).send({
     from: myWalletAddress, // Some Ganache wallet address
     gasLimit: web3.utils.toHex(500000),        // posted at compound.finance/developers#gas-costs

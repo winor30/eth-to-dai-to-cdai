@@ -73,65 +73,11 @@ contract Eth2Dai is Ownable {
     event MyLog(string, uint256);
     event ReceivePayable(address);
 
-    function() external payable {
-        emit ReceivePayable(address(msg.sender));
-    }
-
     // Eth -> Uniswap -> Token -> CTokenに変換して、デポジット
     function swapEtherToTokenToCTokenByUniswap (address payable uniswapAddress, address tokenAddress, address cTokenAddress, uint256 deadline) public payable {
-        // UniswapでETH -> ERC20へ変換
-        uint256 tokenAmount = swapEthToToken(uniswapAddress, deadline);
-        emit MyLog("token for swap result", tokenAmount);
-        // ERC20 -> CTokenの発行
-        uint256 cTokenResult = supplyErc20ToCompound(tokenAddress, cTokenAddress, tokenAmount);
-        emit MyLog("ctoken for supply result to compound", cTokenResult);
     }
-
-    function swapEthToToken(address payable uniswapAddress, uint256 deadline) public payable returns (uint256) {
-        UniswapExchangeInterface _uniswapExchange = UniswapExchangeInterface(uniswapAddress);
-        uint256 tokenAmount = _uniswapExchange.ethToTokenSwapInput.value(msg.value)(1, deadline);
-        return tokenAmount;
-    }
-
-    function supplyErc20ToCompound(
-        address _erc20Contract,
-        address _cErc20Contract,
-        uint256 _numTokensToSupply
-    ) public returns (uint256) {
-        ERC20 underlying = ERC20(_erc20Contract);
-        CERC20 cToken = CERC20(_cErc20Contract);
-        underlying.approve(_cErc20Contract, _numTokensToSupply);
-
-        uint256 mintResult = cToken.mint(_numTokensToSupply);
-        return mintResult;
-    }
-
 
     // CTokenを全てETHで引き出す
     function redeemAll (address uniswapAddress, address tokenAddress, address cTokenAddress, uint256 deadline) public onlyOwner {
-        // CtokenをERC20へ戻す
-        redeemErc20FromCompound(cTokenAddress);
-        // ERC20からETHへ戻す
-        uint256 ethAmount = swapTokenToEth(uniswapAddress, tokenAddress, deadline);
-        emit MyLog("ethAmount for redeem result from uniswap", ethAmount);
-        address(msg.sender).send(address(this).balance);
-    }
-
-    function redeemErc20FromCompound(address _cErc20Contract) public onlyOwner returns (uint256) {
-        CERC20 cToken = CERC20(_cErc20Contract);
-        uint256 targetRedeemTargetTokenAmount = cToken.balanceOf(address(this));
-        uint256 redeemResult = cToken.redeem(targetRedeemTargetTokenAmount);
-        return redeemResult;
-    }
-
-    function swapTokenToEth(address uniswapAddress, address _erc20Contract, uint256 deadline) public onlyOwner returns (uint256) {
-        ERC20 token = ERC20(_erc20Contract);
-        uint256 tokenAmount = token.balanceOf(address(this));
-        bool success = token.approve(uniswapAddress, tokenAmount);
-        require(success, "failed approve from this to uniswapaddress");
-
-        UniswapExchangeInterface _uniswapExchange = UniswapExchangeInterface(uniswapAddress);
-        uint256 ethAmount = _uniswapExchange.tokenToEthSwapInput(tokenAmount, 1, deadline);
-        return ethAmount;
     }
 }
