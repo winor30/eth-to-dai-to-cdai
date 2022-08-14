@@ -4,7 +4,7 @@
   "description": "",
   "main": "truffle-config.js",
   "dependencies": {
-    "@openzeppelin/contracts": "^2.5.0",
+    "@openzeppelin/contracts": "^4.7.2",
     "dotenv": "^8.2.0",
     "ganache-cli": "^6.9.1",
     "solc": "^0.5.9",
